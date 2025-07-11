@@ -3,3 +3,6 @@ DOTFILES=$(cd $(dirname "${BASH_SOURCE[0]}") && pwd)
 
 rm -f $HOME/.hyper.js
 ln -s $DOTFILES/hyper/.hyper.js $HOME/.hyper.js
+
+rm -f $HOME/.wezterm.lua
+ln -s $DOTFILES/wezterm/.wezterm.lua $HOME/.wezterm.lua
