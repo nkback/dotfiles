@@ -29,10 +29,6 @@ return {
                     accept_word = "<C-j>",
                 },
                 ignore_filetypes = {},
-                color = {
-                    suggestion_color = "#ffffff",
-                    cterm = 244,
-                },
                 log_level = "info",
                 disable_inline_completion = false,
                 disable_keymaps = false,
