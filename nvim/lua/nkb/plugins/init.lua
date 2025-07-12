@@ -24,11 +24,10 @@ return {
         keys = { { "J", "<cmd>TSJToggle<cr>", desc = "Join Toggle" } },
         opts = { use_default_keymaps = false, max_join_length = 150 },
     },
-
-    -- {
-    --     "monaqa/dial.nvim",
-    --     keys = { "<C-a>", { "<C-x>", mode = "n" } },
-    -- },
+    {
+        "monaqa/dial.nvim",
+        keys = { "<C-a>", { "<C-x>", mode = "n" } },
+    },
     {
         'nvim-telescope/telescope.nvim',
         tag = '0.1.8',
@@ -66,6 +65,46 @@ return {
             end)
             vim.keymap.set('n', '<leader>po', builtin.lsp_document_symbols, { desc = "Document symbols/functions" })
             vim.keymap.set('n', '<leader>pwo', builtin.lsp_workspace_symbols, { desc = "Workspace symbols" })
+        end,
+    },
+    {
+        "olimorris/codecompanion.nvim",
+        opts = {},
+        dependencies = {
+            "nvim-lua/plenary.nvim",
+            "nvim-treesitter/nvim-treesitter",
+        },
+        config = function()
+            require("codecompanion").setup({
+                strategies = {
+                    chat = {
+                        adapter = "anthropic",
+                    },
+                    inline = {
+                        adapter = "anthropic",
+                    },
+                }
+            })
+        end
+    },
+    {
+        "supermaven-inc/supermaven-nvim",
+        config = function()
+            require("supermaven-nvim").setup({
+                keymaps = {
+                    accept_suggestion = "<Tab>",
+                    clear_suggestion = "<C-]>",
+                    accept_word = "<C-j>",
+                },
+                ignore_filetypes = {},
+                color = {
+                    suggestion_color = "#ffffff",
+                    cterm = 244,
+                },
+                log_level = "info",
+                disable_inline_completion = false,
+                disable_keymaps = false,
+            })
         end,
     },
     {
