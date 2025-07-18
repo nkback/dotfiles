@@ -20,3 +20,4 @@ vim.keymap.set("n", "<leader>D", [["+dd]], { noremap = true, silent = true })
 vim.keymap.set("n", "<leader>j", "mzJ`z")
 vim.keymap.set("n", "gp", "`[v`]", { noremap = true })
 
+vim.keymap.set("n", "<leader>q", ":lua vim.diagnostic.setqflist()<CR>")

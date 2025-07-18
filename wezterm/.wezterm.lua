@@ -39,7 +39,8 @@ config.keys = {
   },
 }
 
-config.font = wezterm.font 'Fira Code'
+config.font = wezterm.font 'IBM Plex Mono'
+-- config.font = wezterm.font 'Fira Code'
 config.font_size = 16.0
 config.window_padding = {
     left = 2,

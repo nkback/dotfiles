@@ -67,7 +67,7 @@ return {
             require("mason-lspconfig").setup({
                 ensure_installed = {
                     "lua_ls",
-                    "phpactor",
+                    "intelephense",
                 },
                 handlers = {
                     function(server_name) -- default handler (optional)
@@ -89,22 +89,62 @@ return {
                             }
                         }
                     end,
-                    ["phpactor"] = function()
+                    ["intelephense"] = function()
                         local lspconfig = require("lspconfig")
-                        lspconfig.phpactor.setup {
+                        lspconfig.intelephense.setup {
                             capabilities = capabilities,
-                            init_options = {
-                                ["completion_worse_limit"] = 1000,
-                                ["worse_reflection.enabled"] = true,
-                                ["language_server_completion.enabled"] = true,
-                                ["language_server_hover.enabled"] = true,
-                                ["language_server_references.enabled"] = true,
-                                ["language_server_definition.enabled"] = true,
-                                ["language_server_diagnostics.enabled"] = true,
-                                ["language_server_code_action.enabled"] = true,
+                            settings = {
+                                intelephense = {
+                                    diagnostics = {
+                                        undefinedFunctions = false,
+                                        undefinedConstants = false,
+                                        undefinedVariables = false,
+                                    },
+                                    environment = {
+                                        includePaths = {
+                                            "vendor/laravel/framework/src/Illuminate/Support/helpers.php"
+                                        }
+                                    },
+                                    files = {
+                                        associations = {
+                                            "*.php",
+                                            "*.phtml"
+                                        },
+                                        exclude = {
+                                            "**/node_modules/**",
+                                            "**/vendor/**"
+                                        }
+                                    },
+                                    completion = {
+                                        insertUseDeclaration = true,
+                                        fullyQualifyGlobalConstantsAndFunctions = false,
+                                        triggerParameterHints = true,
+                                        maxItems = 100,
+                                    },
+                                    format = {
+                                        enable = true,
+                                        braces = "allman"
+                                    }
+                                }
                             }
                         }
                     end,
+                    -- ["phpactor"] = function()
+                    --     local lspconfig = require("lspconfig")
+                    --     lspconfig.phpactor.setup {
+                    --         capabilities = capabilities,
+                    --         init_options = {
+                    --             ["completion_worse_limit"] = 1000,
+                    --             ["worse_reflection.enabled"] = true,
+                    --             ["language_server_completion.enabled"] = true,
+                    --             ["language_server_hover.enabled"] = true,
+                    --             ["language_server_references.enabled"] = true,
+                    --             ["language_server_definition.enabled"] = true,
+                    --             ["language_server_diagnostics.enabled"] = true,
+                    --             ["language_server_code_action.enabled"] = true,
+                    --         }
+                    --     }
+                    -- end,
                 }
             })
 
@@ -119,54 +159,43 @@ return {
                     --     require('telescope.builtin').lsp_definitions()
                     -- end, opts)
                     vim.keymap.set("n", "<leader>af", function()
-                        -- Save cursor position
-                        local cursor = vim.api.nvim_win_get_cursor(0)
-
-                        -- Try to select inside brackets first
-                        local success = pcall(vim.cmd, "normal! vi]")
-
-                        if not success then
-                            -- Restore cursor and try braces
-                            vim.api.nvim_win_set_cursor(0, cursor)
-                            vim.cmd("normal! vi}")
-                        end
-
-                        vim.lsp.buf.format({ async = true })
-                    end, { desc = "LSP format inside brackets/braces" })
-                    vim.keymap.set('n', 'gd', function()
-                        local params = vim.lsp.util.make_position_params()
-                        vim.lsp.buf_request(0, 'textDocument/definition', params, function(err, result, ctx, config)
-                            if err or not result or vim.tbl_isempty(result) then
-                                vim.notify('No definition found', vim.log.levels.WARN)
-                                return
-                            end
-
-                            -- If only one result, jump directly
-                            if #result == 1 then
-                                vim.lsp.util.show_document(result[1], 'utf-8')
-                                -- If multiple results but they're all the same file, just jump to first
-                            elseif #result > 1 then
-                                local first_uri = result[1].uri or result[1].targetUri
-                                local all_same_file = true
-
-                                for _, location in ipairs(result) do
-                                    local uri = location.uri or location.targetUri
-                                    if uri ~= first_uri then
-                                        all_same_file = false
-                                        break
-                                    end
-                                end
-
-                                if all_same_file then
-                                    -- All results are in the same file, just jump to the first one
-                                    vim.lsp.util.show_document(result[1], 'utf-8')
-                                else
-                                    -- Different files, use telescope
-                                    require('telescope.builtin').lsp_definitions()
-                                end
-                            end
-                        end)
-                    end, opts)
+                        vim.cmd("normal! vi}=")
+                    end, { desc = "LSP format inside brackets" })
+                    vim.keymap.set("n", "gd", function() vim.lsp.buf.definition() end, opts)
+                              -- vim.keymap.set('n', 'gd', function()
+                    --     local params = vim.lsp.util.make_position_params()
+                    --     vim.lsp.buf_request(0, 'textDocument/definition', params, function(err, result, ctx, config)
+                    --         if err or not result or vim.tbl_isempty(result) then
+                    --             vim.notify('No definition found', vim.log.levels.WARN)
+                    --             return
+                    --         end
+                    --
+                    --         -- If only one result, jump directly
+                    --         if #result == 1 then
+                    --             vim.lsp.util.show_document(result[1], 'utf-8')
+                    --             -- If multiple results but they're all the same file, just jump to first
+                    --         elseif #result > 1 then
+                    --             local first_uri = result[1].uri or result[1].targetUri
+                    --             local all_same_file = true
+                    --
+                    --             for _, location in ipairs(result) do
+                    --                 local uri = location.uri or location.targetUri
+                    --                 if uri ~= first_uri then
+                    --                     all_same_file = false
+                    --                     break
+                    --                 end
+                    --             end
+                    --
+                    --             if all_same_file then
+                    --                 -- All results are in the same file, just jump to the first one
+                    --                 vim.lsp.util.show_document(result[1], 'utf-8')
+                    --             else
+                    --                 -- Different files, use telescope
+                    --                 require('telescope.builtin').lsp_definitions()
+                    --             end
+                    --         end
+                    --     end)
+                    -- end, opts)
                     vim.keymap.set('n', 'gr', vim.lsp.buf.references, opts)
                     vim.keymap.set('n', 'gi', vim.lsp.buf.implementation, opts)
                     vim.keymap.set('n', 'K', vim.lsp.buf.hover, opts)
