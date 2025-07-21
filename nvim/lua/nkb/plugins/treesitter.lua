@@ -10,9 +10,14 @@ return {
                     "javascript", 
                     "html", 
                     "css",
+                    "go",
+                    "gomod",
+                    "gowork",
+                    "gosum",
+                    "json",
                 },
                 highlight = {
-                    enable = true,  -- This is the key line!
+                    enable = true, 
                     additional_vim_regex_highlighting = false,
                 },
                 indent = {

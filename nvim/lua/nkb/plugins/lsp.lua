@@ -68,6 +68,7 @@ return {
                 ensure_installed = {
                     "lua_ls",
                     "intelephense",
+                    "gopls",
                 },
                 handlers = {
                     function(server_name) -- default handler (optional)
@@ -127,6 +128,29 @@ return {
                                     }
                                 }
                             }
+                        }
+                    end,
+                    ["gopls"] = function()
+                        local lspconfig = require("lspconfig")
+                        lspconfig.gopls.setup {
+                            capabilities = capabilities,
+                            settings = {
+                                gopls = {
+                                    analyses = {
+                                        unusedparams = true,
+                                        staticcheck = true,
+                                    },
+                                    hints = {
+                                        assignVariableTypes = true,
+                                        compositeLiteralFields = true,
+                                        compositeLiteralTypes = true,
+                                        constantValues = true,
+                                        functionTypeParameters = true,
+                                        parameterNames = true,
+                                        rangeVariableTypes = true,
+                                    },
+                                },
+                            },
                         }
                     end,
                     -- ["phpactor"] = function()
