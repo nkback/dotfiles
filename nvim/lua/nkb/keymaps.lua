@@ -21,3 +21,10 @@ vim.keymap.set("n", "<leader>j", "mzJ`z")
 vim.keymap.set("n", "gp", "`[v`]", { noremap = true })
 
 vim.keymap.set("n", "<leader>q", ":lua vim.diagnostic.setqflist()<CR>")
+
+vim.keymap.set("n", "<leader>lf", function()
+  local file = vim.fn.expand("%")
+  local cmd = string.format("./vendor/bin/phpstan analyze --memory-limit=1G %s", file)
+  vim.cmd("split | terminal " .. cmd)
+end, { desc = "Run Larastan on current file" })
+
