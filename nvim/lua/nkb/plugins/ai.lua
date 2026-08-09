@@ -1,39 +1,12 @@
 return {
+    -- add this to the file where you setup your other plugins:
     {
-        "olimorris/codecompanion.nvim",
-        opts = {},
-        dependencies = {
-            "nvim-lua/plenary.nvim",
-            "nvim-treesitter/nvim-treesitter",
-        },
+        "monkoose/neocodeium",
+        event = "VeryLazy",
         config = function()
-            require("codecompanion").setup({
-                strategies = {
-                    chat = {
-                        adapter = "anthropic",
-                    },
-                    inline = {
-                        adapter = "anthropic",
-                    },
-                }
-            })
-        end
-    },
-    {
-        "supermaven-inc/supermaven-nvim",
-        config = function()
-            require("supermaven-nvim").setup({
-                keymaps = {
-                    accept_suggestion = "<Tab>",
-                    clear_suggestion = "<C-]>",
-                    accept_word = "<C-j>",
-                },
-                ignore_filetypes = {},
-                log_level = "info",
-                disable_inline_completion = false,
-                disable_keymaps = false,
-            })
+            local neocodeium = require("neocodeium")
+            neocodeium.setup()
+            vim.keymap.set("i", "<A-f>", neocodeium.accept)
         end,
-    },
-
+    }
 }
